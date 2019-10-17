@@ -3,21 +3,67 @@ import React, { Component } from 'react'
 import * as api from '../graphql/api'
 
 class Guestbook extends Component {
-  componentDidMount() {
+  constructor(props) {
+    super(props)
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleStoryChange = this.handleStoryChange.bind(this)
+    this.handleTwitterChange = this.handleTwitterChange.bind(this)
     let entries = []
     try {
-      entries = this.props.initialEntries.slice(0)
+      entries = props.initialEntries.slice(0)
     } catch (err) {
       console.log(`No entries fetched initially`)
     }
-    this.setState({ entries, cursor: this.props.initialCursor })
+    this.state = {
+      entries,
+      cursor: props.initialCursor,
+      twitterHandle: '',
+      story: '',
+      submitting: false
+    }
+  }
+
+  handleSubmit(event) {
+    event.preventDefault()
+    const { twitterHandle, story } = this.state
+    if (twitterHandle.trim().length === 0) {
+      alert('Please provide a valid twitter handle :)')
+      return
+    }
+    if (story.trim().length === 0) {
+      alert('No favorite memory? This cannot be!')
+      return
+    }
+    this.setState({ submitting: true })
+    api
+      .createGuestbookEntry(twitterHandle, story)
+      .then(data => {
+        let { entries } = this.state
+        entries.unshift(data.data.createGuestbookEntry)
+        this.setState({
+          twitterHandle: '',
+          story: '',
+          entries,
+          submitting: false
+        })
+      })
+      .catch(error => {
+        console.log(`boo :( ${error}`)
+        alert('🤷‍♀️')
+        this.setState({ submitting: false })
+      })
+  }
+
+  handleStoryChange(event) {
+    this.setState({ story: event.target.value })
+  }
+
+  handleTwitterChange(event) {
+    this.setState({ twitterHandle: event.target.value.replace('@', '') })
   }
 
   render() {
-    let entries = this.props.initialEntries
-    if (this.state) {
-      entries = this.state.entries
-    }
+    const { entries, story, twitterHandle, submitting } = this.state
     return (
       <>
         <Head>
@@ -28,6 +74,10 @@ class Guestbook extends Component {
           body {
             margin: 0px;
             padding: 0px;
+          }
+          fieldset {
+            outline: none;
+            border: none;
           }
         `}</style>
         <div className="main">
@@ -41,32 +91,38 @@ class Guestbook extends Component {
               />
             </a>
             <h1 className="main__hero__title">Guestbook</h1>
-            <form className="main__hero__form">
-              <textarea
-                className="main__hero__form__textArea"
-                rows="5"
-                cols="50"
-                name="story"
-                placeholder="What is your favorite memory as a developer?"
-              />
-              <input
-                className="main__hero__form__twitterInput"
-                type="text"
-                placeholder="@twitter_handle"
-              />
-              <input
-                className="main__hero__form__submitButton"
-                type="button"
-                value="Submit"
-              />
+            <form className="main__hero__form" onSubmit={this.handleSubmit}>
+              <fieldset disabled={submitting && 'disabled'}>
+                <textarea
+                  className="main__hero__form__textArea"
+                  rows="5"
+                  cols="50"
+                  name="story"
+                  placeholder="What is your favorite memory as a developer?"
+                  onChange={this.handleStoryChange}
+                  value={story}
+                />
+                <input
+                  className="main__hero__form__twitterInput"
+                  type="text"
+                  placeholder="twitter handle (no '@')"
+                  onChange={this.handleTwitterChange}
+                  value={twitterHandle}
+                />
+                <input
+                  className="main__hero__form__submitButton"
+                  type="submit"
+                  value="Submit"
+                />
+              </fieldset>
             </form>
           </div>
           <div className="main__entries">
-            {entries.map((entry, index) => {
+            {entries.map(entry => {
               const date = new Date(entry._ts / 1000)
               return (
-                <>
-                  <div key={entry._id} className="main__entries__entry">
+                <div key={entry._id}>
+                  <div className="main__entries__entry">
                     <div className="main__entries__entry__userDetail">
                       <a
                         className="main__entries__entry__userDetail__avatar"
@@ -92,7 +148,7 @@ class Guestbook extends Component {
                     </div>
                   </div>
                   <hr className="main__entries__divider" />
-                </>
+                </div>
               )
             })}
           </div>
@@ -191,13 +247,15 @@ class Guestbook extends Component {
             background: rgba(50, 63, 203, 0.5);
           }
           .main__entries__entry {
+            width: 100%;
             display: inline-flex;
             flex-direction: row;
             align-items: center;
             margin-bottom: 30px;
           }
           .main__entries__entry__userDetail {
-            width: 30%;
+            flex-shrink: 0;
+            flex-basis: 30%;
             text-align: center;
           }
           .main__entries__entry__userDetail__avatar {
@@ -233,7 +291,8 @@ class Guestbook extends Component {
             color: gray;
           }
           .main__entries__entry__story {
-            width: 70%;
+            flex-shrink: 0;
+            flex-basis: 70%;
             text-align: left;
             padding-right: 15px;
           }
@@ -243,7 +302,7 @@ class Guestbook extends Component {
             margin-right: auto;
             margin-bottom: 30px;
             height: 1px;
-            width: 20%;
+            width: 80%;
             border-radius: 20px;
             border-color: rgba(50, 63, 203);
             opacity: 0.5;

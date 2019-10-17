@@ -6,8 +6,7 @@ const FAUNA_GRAPHQL_ENDPOINT = 'https://graphql.fauna.com/graphql'
 | Change These for your app!
 |--------------------------------------------------
 */
-const FAUNA_DB_SECRET1 = 'fnADa7WFdHACFHntia-RxcTzi6oAULxsQFjcLAQQ'
-const FAUNA_DB_SECRET2 = 'fnADa7PxyjACFFPqT7i7j7oXjmBorgJwWua2F8Rm'
+const FAUNA_DB_SECRET = 'fnADa80hSqACFJqo-OFlKpTIEvgtCXsuCXCmWfBp'
 
 export const getGuestbookEntries = after => {
   const query = `query Entries($size: Int, $cursor: String) {
@@ -26,7 +25,7 @@ export const getGuestbookEntries = after => {
     fetch(FAUNA_GRAPHQL_ENDPOINT, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${FAUNA_DB_SECRET1}`,
+        Authorization: `Bearer ${FAUNA_DB_SECRET}`,
         'Content-type': 'application/json',
         Accept: 'application/json'
       },
@@ -47,4 +46,39 @@ export const getGuestbookEntries = after => {
   })
 }
 
-export const createGuestbookEntry = async (twitterHandle, story) => {}
+export const createGuestbookEntry = async (twitterHandle, story) => {
+  const query = `mutation CreateGuestbookEntry($twitterHandle: String!, $story: String!) {
+    createGuestbookEntry(data: {
+      twitter_handle: $twitterHandle,
+      story: $story
+    }) {
+      _id
+      _ts
+      twitter_handle
+      story
+    }
+  }`
+  return new Promise((resolve, reject) => {
+    fetch(FAUNA_GRAPHQL_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${FAUNA_DB_SECRET}`,
+        'Content-type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify({
+        query,
+        variables: { twitterHandle, story }
+      })
+    })
+      .then(r => r.json())
+      .then(data => {
+        console.log(data)
+        resolve(data)
+      })
+      .catch(error => {
+        console.log(error)
+        reject(error)
+      })
+  })
+}
