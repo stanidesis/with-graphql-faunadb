@@ -1,0 +1,7 @@
+type GuestbookEntry {
+  twitter_handle: String!
+  story: String!
+}
+type Query {
+  entries: [GuestbookEntry]
+}
