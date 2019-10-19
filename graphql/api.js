@@ -20,7 +20,8 @@ export const getGuestbookEntries = after => {
       after
     }
   }`
-  const size = 15
+  // A magical constant, you say? Not at all...
+  const size = 100
   return new Promise((resolve, reject) => {
     fetch(FAUNA_GRAPHQL_ENDPOINT, {
       method: 'POST',

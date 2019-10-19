@@ -12,11 +12,10 @@ class Guestbook extends Component {
     try {
       entries = props.initialEntries.slice(0)
     } catch (err) {
-      console.log(`No entries fetched initially`)
+      console.log(`No initial entries`)
     }
     this.state = {
       entries,
-      cursor: props.initialCursor,
       twitterHandle: '',
       story: '',
       submitting: false
@@ -69,6 +68,11 @@ class Guestbook extends Component {
         <Head>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <meta charSet="utf-8" />
+          <link
+            rel="shortcut icon"
+            type="image/x-icon"
+            href="/static/favicon.png"
+          />
         </Head>
         <style jsx global>{`
           body {
@@ -118,21 +122,22 @@ class Guestbook extends Component {
             </form>
           </div>
           <div className="main__entries">
-            {entries.map(entry => {
+            {entries.map((entry, index, allEntries) => {
               const date = new Date(entry._ts / 1000)
               return (
                 <div key={entry._id}>
                   <div className="main__entries__entry">
                     <div className="main__entries__entry__userDetail">
-                      <a
-                        className="main__entries__entry__userDetail__avatar"
-                        target="_blank"
-                        href={`https://twitter.com/${entry.twitter_handle}/`}>
-                        <img
-                          className="main__entries__entry__userDetail__avatar__img"
-                          src={`https://avatars.io/twitter/${entry.twitter_handle}/`}
-                        />
-                      </a>
+                      <div className="main__entries__entry__userDetail__avatar">
+                        <a
+                          target="_blank"
+                          href={`https://twitter.com/${entry.twitter_handle}/`}>
+                          <img
+                            className="main__entries__entry__userDetail__avatar__img"
+                            src={`https://avatars.io/twitter/${entry.twitter_handle}/`}
+                          />
+                        </a>
+                      </div>
                       <a
                         className="main__entries__entry__userDetail__biolink"
                         target="_blank"
@@ -147,12 +152,169 @@ class Guestbook extends Component {
                       {entry.story}
                     </div>
                   </div>
-                  <hr className="main__entries__divider" />
+                  <div className="main__entries__share">
+                    <a
+                      href={`http://twitter.com/share?text=${encodeURIComponent(
+                        entry.story + ' @faunadb @zeithq'
+                      )}&url=${encodeURIComponent(
+                        'https://fauna.com'
+                      )}&hashtags=graphql,nextjs
+                      `}
+                      target="_blank"
+                      className="main__entries__share__twitterButton">
+                      <img
+                        src="/static/twitter_icon_black.png"
+                        className="main__entries__share__twitterButton__logo1"
+                      />
+                      <img
+                        className="main__entries__share__twitterButton__logo2"
+                        src="/static/twitter_icon_blue.png"
+                      />
+                    </a>
+                  </div>
+                  {index < allEntries.length - 1 && (
+                    <hr className="main__entries__divider" />
+                  )}
                 </div>
               )
             })}
           </div>
-          <footer className="main__footer">footer stuff</footer>
+          <footer className="main__footer">
+            <div className="main__footer__col1">
+              <a href="https://fauna.com" target="_blank">
+                <img
+                  className="main__footer__col1__logo"
+                  src="/static/fauna-logo-white.png"
+                  height="35px"
+                  width="auto"
+                />
+              </a>
+              <p className="main__footer__col1__address">
+                744 Montgomery Street
+                <br />
+                Suite 200
+                <br />
+                San Francisco, CA 94111
+                <br />
+                <a
+                  href="mailto:info@fauna.com"
+                  className="main__footer__col1__address__url">
+                  info@fauna.com
+                </a>
+              </p>
+            </div>
+            <div className="main__footer__col2">
+              Fauna
+              <ul className="main__footer__list">
+                <li>
+                  <a
+                    className="main__footer__list__url"
+                    target="_blank"
+                    href="https://fauna.com/faunadb">
+                    FaunaDB
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className="main__footer__list__url"
+                    target="_blank"
+                    href="https://fauna.com/pricing">
+                    Pricing
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className="main__footer__list__url"
+                    target="_blank"
+                    href="https://fauna.com/resources">
+                    Resources
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className="main__footer__list__url"
+                    target="_blank"
+                    href="https://fauna.com/blog">
+                    Blog
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div className="main__footer__col3">
+              About
+              <ul className="main__footer__list">
+                <li>
+                  <a
+                    className="main__footer__list__url"
+                    target="_blank"
+                    href="https://fauna.com/team">
+                    Company
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className="main__footer__list__url"
+                    target="_blank"
+                    href="https://fauna.com/press">
+                    Press
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className="main__footer__list__url"
+                    target="_blank"
+                    href="https://fauna.com/careers">
+                    Careers
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className="main__footer__list__url"
+                    target="_blank"
+                    href="http://www2.fauna.com/contact-us">
+                    Contact
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div className="main__footer__col4">
+              Quicklinks
+              <ul className="main__footer__list">
+                <li>
+                  <a
+                    className="main__footer__list__url"
+                    target="_blank"
+                    href="https://community-invite.fauna.com/">
+                    Community Slack
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className="main__footer__list__url"
+                    target="_blank"
+                    href="https://support.fauna.com/">
+                    Support
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className="main__footer__list__url"
+                    target="_blank"
+                    href="https://dashboard.fauna.com/">
+                    Login
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className="main__footer__list__url"
+                    target="_blank"
+                    href="https://dashboard.fauna.com/accounts/register">
+                    Signup
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </footer>
         </div>
         <style jsx>{`
           .main {
@@ -176,6 +338,7 @@ class Guestbook extends Component {
           .main__hero__title {
             font-size: 300%;
             font-weight: normal;
+            margin: 15px 0;
           }
           .main__hero__form {
             position: relative;
@@ -260,10 +423,19 @@ class Guestbook extends Component {
           }
           .main__entries__entry__userDetail__avatar {
             display: inline-block;
+            position: relative;
             margin-bottom: 5px;
+            width: 70px;
+            height: 70px;
           }
           .main__entries__entry__userDetail__avatar__img {
-            width: 25%;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
             border-radius: 50%;
             border: 2px solid rgba(50, 63, 203, 0.5);
             opacity: 0.75;
@@ -292,9 +464,34 @@ class Guestbook extends Component {
           }
           .main__entries__entry__story {
             flex-shrink: 0;
-            flex-basis: 70%;
+            flex-basis: 60%;
             text-align: left;
             padding-right: 15px;
+          }
+          .main__entries__share {
+            margin-bottom: 30px;
+          }
+          .main__entries__share__twitterButton {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            position: relative;
+          }
+          .main__entries__share__twitterButton__logo1,
+          .main__entries__share__twitterButton__logo2 {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+          }
+          .main__entries__share__twitterButton__logo1 {
+            opacity: 0.5;
+          }
+          .main__entries__share__twitterButton__logo2 {
+            opacity: 0;
+            transition: opacity 200ms ease-in-out;
+          }
+          .main__entries__share__twitterButton__logo2:hover {
+            opacity: 1;
           }
           .main__entries__divider {
             display: block;
@@ -310,9 +507,42 @@ class Guestbook extends Component {
           .main__footer {
             flex-grow: 1;
             flex-shrink: 0;
-            flex-basis: 95px;
+            flex-basis: 140px;
             width: 100%;
             background-color: rgba(50, 63, 203);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            color: white !important;
+            padding-top: 20px;
+            padding-bottom: 20px;
+          }
+          .main__footer__col1,
+          .main__footer__col2,
+          .main__footer__col3,
+          .main__footer__col4 {
+            flex-basis: 25%;
+            padding: 0 15px;
+          }
+
+          .main__footer__col1 {
+            font-size: 60% !important;
+          }
+          .main__footer__col1__address__url {
+            color: white !important;
+          }
+          .main__footer__list {
+            list-style-type: none;
+            padding: 0;
+          }
+          .main__footer__list__url {
+            color: white;
+            text-decoration: none;
+            transition: color 200ms ease-in-out;
+            color: rgba(255, 255, 255, 0.5);
+          }
+          .main__footer__list__url:hover {
+            color: white;
           }
         `}</style>
       </>
@@ -323,8 +553,7 @@ class Guestbook extends Component {
 Guestbook.getInitialProps = async function() {
   const initialEntries = await api.getGuestbookEntries()
   return {
-    initialEntries: initialEntries.data.entries.data,
-    initialCursor: initialEntries.data.entries.after
+    initialEntries: initialEntries.data.entries.data.reverse()
   }
 }
 
