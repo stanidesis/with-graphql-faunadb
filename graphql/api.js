@@ -3,14 +3,26 @@ import fetch from 'isomorphic-unfetch'
 const FAUNA_GRAPHQL_ENDPOINT = 'https://graphql.fauna.com/graphql'
 /**
 |--------------------------------------------------
-| Change These for your app!
+| Set the client secret for your database here.
+|
+| Learn more about managing roles and creating private keys:
+| https://docs.fauna.com/fauna/current/security/
 |--------------------------------------------------
 */
-const FAUNA_DB_SECRET = 'fnADa80hSqACFJqo-OFlKpTIEvgtCXsuCXCmWfBp'
+const FAUNA_DB_CLIENT_SECRET = 'fnADa80hSqACFJqo-OFlKpTIEvgtCXsuCXCmWfBp'
 
-export const getGuestbookEntries = after => {
-  const query = `query Entries($size: Int, $cursor: String) {
-    entries(_size: $size, _cursor: $cursor) {
+/**
+|--------------------------------------------------
+| This GraphQL query returns an array of Guestbook
+| entries complete with both the provided and implicit
+| data attributes.
+|
+| Learn more about GraphQL: https://graphql.org/learn/
+|--------------------------------------------------
+*/
+export const getGuestbookEntries = () => {
+  const query = `query Entries($size: Int) {
+    entries(_size: $size) {
       data {
         _id
         _ts
@@ -20,19 +32,18 @@ export const getGuestbookEntries = after => {
       after
     }
   }`
-  // A magical constant, you say? Not at all...
   const size = 100
   return new Promise((resolve, reject) => {
     fetch(FAUNA_GRAPHQL_ENDPOINT, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${FAUNA_DB_SECRET}`,
+        Authorization: `Bearer ${FAUNA_DB_CLIENT_SECRET}`,
         'Content-type': 'application/json',
         Accept: 'application/json'
       },
       body: JSON.stringify({
         query,
-        variables: { size, after }
+        variables: { size }
       })
     })
       .then(r => r.json())
@@ -47,6 +58,21 @@ export const getGuestbookEntries = after => {
   })
 }
 
+/**
+|--------------------------------------------------
+| This GraphQL mutation creates a new GuestbookEntry
+| with the requisite twitter handle and story arguments.
+|
+| It returns the stored data and includes the unique
+| identifier (_id) as well as _ts (time created).
+|
+| The guestbook uses the _id value as the unique key
+| and the _ts value to sort and display the date of
+| publication.
+|
+| Learn more about GraphQL mutations: https://graphql.org/learn/queries/#mutations
+|--------------------------------------------------
+*/
 export const createGuestbookEntry = async (twitterHandle, story) => {
   const query = `mutation CreateGuestbookEntry($twitterHandle: String!, $story: String!) {
     createGuestbookEntry(data: {
@@ -63,7 +89,7 @@ export const createGuestbookEntry = async (twitterHandle, story) => {
     fetch(FAUNA_GRAPHQL_ENDPOINT, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${FAUNA_DB_SECRET}`,
+        Authorization: `Bearer ${FAUNA_DB_CLIENT_SECRET}`,
         'Content-type': 'application/json',
         Accept: 'application/json'
       },
