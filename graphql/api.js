@@ -1,15 +1,7 @@
 import fetch from 'isomorphic-unfetch'
+import getConfig from 'next/config'
 
-const FAUNA_GRAPHQL_ENDPOINT = 'https://graphql.fauna.com/graphql'
-/**
-|--------------------------------------------------
-| Set the client secret for your database here.
-|
-| Learn more about managing roles and creating private keys:
-| https://docs.fauna.com/fauna/current/security/
-|--------------------------------------------------
-*/
-const FAUNA_DB_CLIENT_SECRET = 'fnADa80hSqACFJqo-OFlKpTIEvgtCXsuCXCmWfBp'
+const { publicRuntimeConfig } = getConfig()
 
 /**
 |--------------------------------------------------
@@ -34,10 +26,10 @@ export const getGuestbookEntries = () => {
   }`
   const size = 100
   return new Promise((resolve, reject) => {
-    fetch(FAUNA_GRAPHQL_ENDPOINT, {
+    fetch(publicRuntimeConfig.faunaDbGraphQlEndpoint, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${FAUNA_DB_CLIENT_SECRET}`,
+        Authorization: `Bearer ${publicRuntimeConfig.faunaDbSecret}`,
         'Content-type': 'application/json',
         Accept: 'application/json'
       },
@@ -86,10 +78,10 @@ export const createGuestbookEntry = async (twitterHandle, story) => {
     }
   }`
   return new Promise((resolve, reject) => {
-    fetch(FAUNA_GRAPHQL_ENDPOINT, {
+    fetch(publicRuntimeConfig.faunaDbGraphQlEndpoint, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${FAUNA_DB_CLIENT_SECRET}`,
+        Authorization: `Bearer ${publicRuntimeConfig.faunaDbSecret}`,
         'Content-type': 'application/json',
         Accept: 'application/json'
       },
