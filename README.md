@@ -1,6 +1,6 @@
 # FaunaDB Graphql Starter Example -- The FaunaDB Guestbook
 
-This simple example shows you how to use [FaunaDB's GraphQL endpoint](https://docs.fauna.com/fauna/current/api/graphql/) in your nextjs project.
+This simple Guestbook SPA example shows you how to use [FaunaDB's GraphQL endpoint](https://docs.fauna.com/fauna/current/api/graphql/) in your Next.js project. [[Live demo](https://with-graphql-faunadb.now.sh/)].
 
 - [Why FaunaDB](#why-faunadb)
 - [How To Use This Template](#how-to-use-this-template)
@@ -11,13 +11,13 @@ This simple example shows you how to use [FaunaDB's GraphQL endpoint](https://do
 
 ## Why FaunaDB
 
-By importing a `.gql` or `.graphql` schema into FaunaDB (sample file in [static directory](TODO)), FaunaDB will generate required Indexes and GraphQL resolvers for you -- hands free 👐 ([some limitations exist](https://docs.fauna.com/fauna/current/api/graphql/#limitations)).
+By importing a `.gql` or `.graphql` schema into FaunaDB ([see our sample schema file](#TODO)), FaunaDB will generate required Indexes and GraphQL resolvers for you -- hands free 👐 ([some limitations exist](https://docs.fauna.com/fauna/current/api/graphql/#limitations)).
 
 ## How To Use This Template
 
 You can start with this template [using `create-next-app`](#use-create-next-app) or by [downloading the repository manually](#download-this-template-manually).
 
-To switch to your database, take a look inside the `/api/graphql.js` implementation and modify the `schema.gql` file before uploading yours to FaunaDB.
+To use a live FaunaDB database, create one and import this example's `schema.gql` file using the FaunaDB console. Create a client secret, then paste it into `next.config.js`.
 
 ### Use `create-next-app`
 
@@ -46,7 +46,7 @@ npm install
 now dev
 ```
 
-Make sure to leave us a message in the guestbook! 😉
+Make sure to leave us a guestbook message in our [live demo](https://with-graphql-faunadb.now.sh/)! 😉
 
 ### Deploy
 
