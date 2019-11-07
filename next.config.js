@@ -1,5 +1,5 @@
 module.exports = {
-  publicRuntimeConfig: {
+  env: {
     /**
     |--------------------------------------------------
     | Set the client secret for your database here.
@@ -8,7 +8,7 @@ module.exports = {
     | https://docs.fauna.com/fauna/current/security/
     |--------------------------------------------------
     */
-    faunaDbSecret: 'fnADa80hSqACFJqo-OFlKpTIEvgtCXsuCXCmWfBp',
+    faunaDbSecret: 'fnADcnWRUcACE_6uDSw05MspruDdWKk88ZSmsm2a',
     faunaDbGraphQlEndpoint: 'https://graphql.fauna.com/graphql'
   }
 }

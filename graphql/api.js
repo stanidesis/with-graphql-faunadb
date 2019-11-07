@@ -1,8 +1,6 @@
 import fetch from 'isomorphic-unfetch'
 import getConfig from 'next/config'
 
-const { publicRuntimeConfig } = getConfig()
-
 /**
 |--------------------------------------------------
 | This GraphQL query returns an array of Guestbook
@@ -26,10 +24,10 @@ export const getGuestbookEntries = () => {
   }`
   const size = 100
   return new Promise((resolve, reject) => {
-    fetch(publicRuntimeConfig.faunaDbGraphQlEndpoint, {
+    fetch(process.env.faunaDbGraphQlEndpoint, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${publicRuntimeConfig.faunaDbSecret}`,
+        Authorization: `Bearer ${process.env.faunaDbSecret}`,
         'Content-type': 'application/json',
         Accept: 'application/json'
       },
@@ -78,10 +76,10 @@ export const createGuestbookEntry = async (twitterHandle, story) => {
     }
   }`
   return new Promise((resolve, reject) => {
-    fetch(publicRuntimeConfig.faunaDbGraphQlEndpoint, {
+    fetch(process.env.faunaDbGraphQlEndpoint, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${publicRuntimeConfig.faunaDbSecret}`,
+        Authorization: `Bearer ${process.env.faunaDbSecret}`,
         'Content-type': 'application/json',
         Accept: 'application/json'
       },
