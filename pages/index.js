@@ -30,7 +30,6 @@ const Guestbook = props => {
           display: flex;
           margin-left: auto;
           margin-right: auto;
-          height: 100vh;
           font-family: sans-serif, sans;
           flex-direction: column;
           align-items: center;

@@ -72,6 +72,7 @@ export const guestbookEntryStory = css.resolve`
     flex-basis: 60%;
     text-align: left;
     padding-right: 15px;
+    white-space: pre-wrap;
   }
 `
 export const guestbookEntryShare = css.resolve`
